@@ -1,0 +1,18 @@
+ext{
+    dependenciesVersion = [
+            arouter: "1.5.2",
+            arouter_compiler: "1.5.2",
+            glide: "4.5.0",
+            glide_compiler: "4.11.0",
+            design: "28.0.0"
+    ]
+
+    dependencies = [
+            design: "com.android.support:design:$dependenciesVersion.design",
+            arouter: "com.alibaba:arouter-api:$dependenciesVersion.arouter",
+            arouter_compiler:"com.alibaba:arouter-compiler:$dependenciesVersion.arouter_compiler",
+            glide: "com.github.bumptech.glide:glide:$dependenciesVersion.glide",
+            glide_compiler: "com.github.bumptech.glide:compiler:$dependenciesVersion.glide_compiler"
+    ]
+}
+

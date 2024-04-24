@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    >
+    <data>
+        <variable
+            name="good"
+            type="com.example.bean.GoodBean" />
+        <variable
+            name="click"
+            type="com.example.bean.GoodClick" />
+    </data>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{good.name}"
+            android:onClick="@{good.food ? click.getName : click.getPrice}"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{String.valueOf(good.price)}"
+            />
+        <Button
+            android:id="@+id/mian4_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="测试"
+            />
+        <Button
+            android:id="@+id/mian4_text2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="跳转"
+            />
+    </LinearLayout>
+
+</layout>

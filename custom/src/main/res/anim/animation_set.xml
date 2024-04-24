@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<set
+    xmlns:ss="http://schemas.android.com/apk/res/android"
+    ss:shareInterpolator="true"
+    >
+<!--    <translate ss:fromXDelta="1dp" ss:toXDelta="100dp" ss:fromYDelta="1dp" ss:toYDelta="100dp"/>-->
+<!--    <scale ss:fromXScale="1dp" ss:toXScale="300dp" ss:fromYScale="1dp" ss:toYScale="300dp" ss:pivotX="40" ss:pivotY="30"/>-->
+<!--    <rotate ss:fromDegrees="180" ss:toDegrees="360"/>-->
+    <alpha ss:fromAlpha="0.1" ss:toAlpha="1"/>
+    <translate ss:fromXDelta="500" ss:toXDelta="0"/>
+</set>

@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.example.textview">
+
+    <application
+        android:name="com.example.MyApplication"
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:requestLegacyExternalStorage="true"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.TextView"
+        android:usesCleartextTraffic="true"
+        tools:replace="android:allowBackup"
+        tools:targetApi="31">
+        <activity
+            android:name=".BaseActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".MainActivity3"
+            android:exported="true"
+            android:label="@string/title_activity_main3"
+            android:process=":remote"
+            android:taskAffinity="sss.xxx.fff"
+            android:theme="@style/Theme.TextView.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.main3" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.main3" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".MainActivity2"
+            android:enabled="true"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
+            android:exported="true">
+        </activity>
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.TextView.NoActionBar" />
+        <activity
+            android:name=".MessageActivity"
+            android:exported="true"
+            android:theme="@style/Theme.TextView.NoActionBar" />
+        <activity
+            android:name=".SocketActivity"
+            android:exported="true"
+            android:theme="@style/Theme.TextView.NoActionBar" />
+        <activity
+            android:name=".AidlActivity"
+            android:exported="true"
+            android:theme="@style/Theme.TextView.NoActionBar" />
+        <activity
+            android:name=".ScrollActivity"
+            android:exported="true"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name="com.example.vedio.HomePageActivity"
+            android:enabled="true"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:theme="@style/Theme.TextView.NoActionBar" />
+        <activity
+            android:name="com.example.vedio.SplashActivity"
+            android:enabled="true"
+            android:exported="true"
+            android:theme="@style/LoginTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name = ".MyWebViewActivity"
+            android:enabled="true"
+            android:exported="true"
+            />
+        <activity android:name=".MainActivity4"
+            android:exported="true"
+            android:enabled="true"
+            android:launchMode="singleTask"
+            />
+        <meta-data
+            android:name="design_width_in_dp"
+            android:value="360" />
+
+        <meta-data
+            android:name="design_height_in_dp"
+            android:value="640" />
+        <provider
+            android:name="com.example.contentProvider.BookProvider"
+            android:authorities="com.example.provider.book"
+            android:permission="com.example.PROVIDER"
+            android:process=":provider" />
+
+        <receiver
+            android:name=".NewAppWidget"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/new_app_widget_info" />
+        </receiver>
+        <receiver
+            android:name="com.example.widget.MyAppWidgetProvider"
+            android:exported="false">
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/appwidget_provider_info"
+                />
+            <intent-filter>
+                <action android:name="com.awp.action.click"/>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name="com.example.widget.TimeAppWidgetProvider"
+            android:exported="false"
+            >
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/time"
+                >
+            </meta-data>
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+                <action android:name="com.time.click.action"/>
+            </intent-filter>
+        </receiver>
+        <service
+            android:name="com.example.service.ManagerService"
+            android:process=":service1" />
+        <service
+            android:name="com.example.service.CarManagerService"
+            android:process=":service2" />
+        <service
+            android:name="com.example.socket.TCPServiceSocket"
+            android:process=":service3" />
+
+        <service
+            android:name="com.example.service.BinderPoolService"
+            android:process=":service4" />
+        <service android:name="com.example.custom.activity.AWidgetActivity$MyServiceIntent"
+            tools:ignore="Instantiatable" />
+    </application>
+    <permission
+        android:name="com.example.textview.service"
+        android:protectionLevel="normal" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_INTERNAL_STORAGE" />
+
+    <uses-permission android:name="android.permission.READ_INTERNAL_STORAGE" />
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <uses-permission android:name="com.example.textview.service" />
+
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+
+</manifest>

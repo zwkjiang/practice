@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#ffffff"
+    >
+    <com.example.custom.view.CircleView
+        android:layout_width="wrap_content"
+        android:layout_height="100dp"
+        android:background="#000000"
+        android:layout_margin="20dp"
+        android:padding="20dp"
+        app:circle_color="#0091EA"
+        />
+    <com.example.custom.view.HorizontalScrollViewEx
+        android:layout_width="match_parent"
+        android:layout_height="500dp">
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:background="#FFAB00"
+            />
+        <ImageView
+            android:layout_width="200dp"
+            android:layout_height="100dp"
+            android:background="#DD2C00"
+            />
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:background="#00BFA5"
+            />
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:background="#64DD17"
+            />
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:background="#6200EA"
+            />
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:background="#D50000"
+            />
+    </com.example.custom.view.HorizontalScrollViewEx>
+
+</LinearLayout>
