@@ -91,8 +91,8 @@ public class MainActivity4 extends BaseActivity {
         switch (v.getId()) {
             case R.id.mian4_text:
 //                reentrantLock();
-//                MyLockService myLockService = new MyLockService();
-//                myLockService.moreThread();
+                MyLockService myLockService = new MyLockService();
+                myLockService.moreThread();
                 EventBus.getDefault().post(new EventBean("main4", "成功"));
                 break;
             case R.id.mian4_text2:
