@@ -19,3 +19,16 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+-dontusemixedcaseclassnames
+
+-dontskipnonpubliclibraryclasses
+
+-verbose
+
+-keeppackagenames *Annotation*
+
+-keep public class com.example.common.LogUtils
+
+-keepclasseswithmembernames class * {
+      native<methods>;
+}

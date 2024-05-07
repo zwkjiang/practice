@@ -2,7 +2,7 @@
 buildscript {
     ext {
         varMinSdk = 24
-        varTargetSdk = 32
+        varTargetSdk = 30
         lubanVersion = '1.1.8'
     }
     subprojects {

@@ -14,7 +14,7 @@ public class MyArrayQueueRing {
         this.size = size;
     }
 
-    public boolean enqueue(String str){
+    public boolean enqueue(String str) {
         if ((tail + 1) % size == head) {
             // 队列已满
             return false;

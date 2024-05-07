@@ -6,15 +6,32 @@ import com.example.common.R;
 
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class MyLockService {
 
-    public ReentrantLock reentrantLock = new ReentrantLock();
+    public boolean isFair;
+    public ReentrantLock reentrantLock;
 
-    public Condition condition = reentrantLock.newCondition();
-    public Condition conditionN = reentrantLock.newCondition();
+    public ReentrantReadWriteLock reentrantReadWriteLock = new ReentrantReadWriteLock();
+
+    public Condition condition;
+    public Condition conditionN;
 
     private String name;
+
+    public MyLockService(){
+        reentrantLock = new ReentrantLock();
+        condition = reentrantLock.newCondition();
+        conditionN = reentrantLock.newCondition();
+    }
+
+    public MyLockService(boolean isFair) {
+        reentrantLock = new ReentrantLock(false);
+        condition = reentrantLock.newCondition();
+        conditionN = reentrantLock.newCondition();
+        this.isFair = isFair;
+    }
 
     public void await() {
         reentrantLock.lock();
@@ -83,16 +100,16 @@ public class MyLockService {
             public void run() {
                 lock.lock();
                 try {
-                    Log.i("ZWK","ThreadA");
+                    Log.i("ZWK", "ThreadA");
                     while (nextPrintWo != 1) {
+                        Log.i("ZWK", "ThreadA wait");
                         conditionA.await();
-                        Log.i("ZWK","ThreadA wait");
                     }
-                   for (int i = 0; i < 3; i++) {
-                       Log.i("ZWK","ThreadA" + (i + 1));
+                    for (int i = 0; i < 3; i++) {
+                        Log.i("ZWK", "ThreadA" + (i + 1));
                     }
-                   nextPrintWo = 2;
-                   conditionB.signalAll();
+                    nextPrintWo = 2;
+                    conditionB.signalAll();
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 } finally {
@@ -106,13 +123,13 @@ public class MyLockService {
             public void run() {
                 lock.lock();
                 try {
-                    Log.i("ZWK","ThreadB");
+                    Log.i("ZWK", "ThreadB");
                     while (nextPrintWo != 2) {
+                        Log.i("ZWK", "ThreadB wait");
                         conditionB.await();
-                        Log.i("ZWK","ThreadB wait");
                     }
                     for (int i = 0; i < 3; i++) {
-                        Log.i("ZWK","ThreadB" + (i + 1));
+                        Log.i("ZWK", "ThreadB" + (i + 1));
                     }
                     nextPrintWo = 3;
                     conditionC.signalAll();
@@ -129,13 +146,13 @@ public class MyLockService {
             public void run() {
                 lock.lock();
                 try {
-                    Log.i("ZWK","ThreadC");
+                    Log.i("ZWK", "ThreadC");
                     while (nextPrintWo != 3) {
+                        Log.i("ZWK", "ThreadC wait");
                         conditionC.await();
-                        Log.i("ZWK","ThreadC wait");
                     }
                     for (int i = 0; i < 3; i++) {
-                        Log.i("ZWK","ThreadC" + (i + 1));
+                        Log.i("ZWK", "ThreadC" + (i + 1));
                     }
                     nextPrintWo = 1;
                     conditionA.signalAll();
@@ -159,6 +176,39 @@ public class MyLockService {
             aArray[i].start();
             bArray[i].start();
             cArray[i].start();
+        }
+    }
+
+    public void fairLock() {
+        try {
+            reentrantLock.lock();
+            Log.i("ZWK","Thread name "+Thread.currentThread().getName() + " 获得锁定");
+        } finally {
+            reentrantLock.unlock();
+        }
+    }
+
+    public void read() {
+        try {
+            reentrantReadWriteLock.readLock().lock();
+            Log.i("ZWK","Thread 获得读锁 "+Thread.currentThread().getName() + " 时间:"+System.currentTimeMillis());
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } finally {
+            reentrantReadWriteLock.readLock().unlock();
+        }
+    }
+
+    public void write() {
+        try {
+            reentrantReadWriteLock.writeLock().lock();
+            Log.i("ZWK","Thread 获得写锁 "+Thread.currentThread().getName() + " 时间:"+System.currentTimeMillis());
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } finally {
+            reentrantReadWriteLock.writeLock().unlock();
         }
     }
 }

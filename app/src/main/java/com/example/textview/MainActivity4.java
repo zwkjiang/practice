@@ -7,9 +7,7 @@ import android.content.ContentResolver;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.CalendarContract;
 import android.provider.Settings;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -21,17 +19,17 @@ import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
-import com.bumptech.glide.Glide;
-import com.example.aidl.CarBean;
+import com.example.MyApplication;
 import com.example.bean.EventBean;
 import com.example.bean.GoodBean;
 import com.example.bean.GoodClick;
 import com.example.common.Contons;
+import com.example.common.LogUtils;
 import com.example.common.MyArrayQueue;
 import com.example.common.MyArrayQueueRing;
 import com.example.common.MyLinkedList;
-import com.example.common.MySortUtils;
 import com.example.common.MyStack;
+import com.example.common.Singleton;
 import com.example.common.executor.ExecutorManager;
 import com.example.common.lock.MyLockService;
 import com.example.common.lock.MyLockThread;
@@ -45,15 +43,25 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.Callable;
-import java.util.concurrent.locks.ReentrantLock;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.KeyGenerator;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
@@ -93,11 +101,112 @@ public class MainActivity4 extends BaseActivity {
 //                reentrantLock();
 //                MyLockService myLockService = new MyLockService();
 //                myLockService.moreThread();
+//                fairLock();
+//                read();
+                byte[] encrypt = encrypt("23424234242432", "1111");
+                LogUtils.i("加密："+ encrypt);
                 EventBus.getDefault().post(new EventBean("main4", "成功"));
                 break;
             case R.id.mian4_text2:
                 finish();
                 break;
+        }
+    }
+
+    public HashMap<String,Object> getKeys() throws NoSuchAlgorithmException {
+        HashMap<String, Object> map = new HashMap<>();
+        KeyPairGenerator rsa = KeyPairGenerator.getInstance("RSA");
+        rsa.initialize(1024);
+        KeyPair keyPair = rsa.genKeyPair();
+        RSAPrivateKey aPrivate = (RSAPrivateKey) keyPair.getPrivate();
+        RSAPublicKey aPublic = (RSAPublicKey) keyPair.getPublic();
+        map.put("private",aPrivate);
+        map.put("public",aPublic);
+        return map;
+    }
+
+    /**
+     *不安全加密
+     *
+     * @param content 内容
+     * @param password 密码
+     */
+    public byte[] encrypt(String content,String password){
+        try {
+            KeyGenerator kgne = KeyGenerator.getInstance("AES");
+            kgne.init(128,new SecureRandom(password.getBytes()));
+            SecretKey secretKey = kgne.generateKey();
+            byte[] enCodeFormat = secretKey.getEncoded();
+            SecretKeySpec key = new SecretKeySpec(enCodeFormat, "AES");
+            Cipher cipher = Cipher.getInstance("AES");
+            byte[] byteContent = content.getBytes(StandardCharsets.UTF_8);
+            cipher.init(Cipher.ENCRYPT_MODE,key);
+            byte[] bytes = cipher.doFinal(byteContent);
+            return bytes;
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalBlockSizeException e) {
+            throw new RuntimeException(e);
+        } catch (BadPaddingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void read(){
+        MyLockService myLockService = new MyLockService(false);
+        Thread threadWrite = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                myLockService.write();
+            }
+        });
+
+        Thread threadWrite1 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                myLockService.write();
+            }
+        });
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                myLockService.read();
+            }
+        });
+
+        Thread thread1 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                myLockService.read();
+            }
+        });
+//        thread.start();
+        thread1.start();
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+//        threadWrite.start();
+        threadWrite1.start();
+    }
+
+    public void fairLock() {
+        MyLockService myLockService = new MyLockService(false);
+        Runnable runnable = new Runnable() {
+
+            @Override
+            public void run() {
+                Log.i("ZWK","Thread name "+Thread.currentThread().getName() + " 运行了");
+                myLockService.fairLock();
+            }
+        };
+        ArrayList<Thread> runnables = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            runnables.add(new Thread(runnable));
+        }
+        for (int i = 0; i < runnables.size(); i++) {
+            runnables.get(i).start();
         }
     }
 
@@ -155,6 +264,8 @@ public class MainActivity4 extends BaseActivity {
             Object o = objectObjectHashMap.get(key);
         }
 //        myLinkedList.headInsert(6);
+        // leakCanary测试
+//        Singleton.getInstance(this);
     }
 
     @Override

@@ -2,9 +2,7 @@ package com.example;
 
 import android.app.Application;
 import android.content.Context;
-import android.os.Build;
 import android.os.StrictMode;
-import android.util.Log;
 
 import androidx.multidex.MultiDex;
 
@@ -14,6 +12,9 @@ import com.example.common.exception.CrashHandler;
 import com.example.daggertest.DaggerGoodComponent;
 import com.example.daggertest.GoodComponent;
 import com.example.daggertest.GoodModule;
+import com.facebook.stetho.Stetho;
+import com.squareup.leakcanary.LeakCanary;
+import com.squareup.leakcanary.RefWatcher;
 
 import me.jessyan.autosize.AutoSizeConfig;
 
@@ -41,6 +42,9 @@ public class MyApplication extends Application {
 //                BlockCanary.install(this,new AppBlockCanary()).start();
             }
         GoodComponent build = DaggerGoodComponent.builder().goodModule(new GoodModule(this)).build();
+        Stetho.initializeWithDefaults(this);
+        RefWatcher install = LeakCanary.install(this);
+        install.watch(this);
     }
 
     @Override
