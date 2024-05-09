@@ -1,18 +1,25 @@
 package com.example.vedio;
 
 import android.annotation.SuppressLint;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.core.app.NotificationCompat;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.bumptech.glide.Glide;
 import com.example.adapter.HomePageAdapter;
+import com.example.aidl.UserImpl;
 import com.example.api.MainLifecycle;
 import com.example.common.Contons;
 import com.example.common.UiUtils;
@@ -22,6 +29,8 @@ import com.example.daggertest.GoodModule;
 import com.example.daggertest.GoodService;
 import com.example.fragment.MainFragment;
 import com.example.fragment.MineFragment;
+import com.example.login.LoginUser;
+import com.example.service.LoginService;
 import com.example.textview.BaseActivity;
 import com.example.textview.R;
 import com.google.android.material.tabs.TabLayout;

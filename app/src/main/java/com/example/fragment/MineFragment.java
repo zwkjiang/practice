@@ -2,15 +2,25 @@ package com.example.fragment;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.os.IBinder;
+import android.os.Message;
+import android.os.Messenger;
+import android.os.Parcel;
+import android.os.RemoteException;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.MediaController;
+import android.widget.Toast;
 import android.widget.VideoView;
 
 import androidx.core.app.ActivityCompat;
@@ -20,9 +30,13 @@ import com.alibaba.android.arouter.launcher.ARouter;
 import com.example.bean.CarBean;
 import com.example.bean.EventBean;
 import com.example.common.Contons;
+import com.example.common.LogUtils;
 import com.example.common.executor.ExecutorManager;
 import com.example.common.view.BaseFragment;
 import com.example.custom.view.MyTextView;
+import com.example.login.LoginUser;
+import com.example.service.LoginService;
+import com.example.service.NotificationService;
 import com.example.textview.R;
 
 import org.greenrobot.eventbus.EventBus;
@@ -35,6 +49,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Objects;
 
 public class MineFragment extends BaseFragment implements View.OnTouchListener {
 
@@ -47,6 +62,12 @@ public class MineFragment extends BaseFragment implements View.OnTouchListener {
     private MyTextView videoText;
     private MyTextView videoText2;
     private MyTextView videoText3;
+
+    private MyTextView videoText4;
+
+    private MyTextView startService;
+
+    private MyTextView login;
 
     private HandlerThread handlerThread;
 
@@ -69,12 +90,60 @@ public class MineFragment extends BaseFragment implements View.OnTouchListener {
         videoView = getView().findViewById(R.id.video_view);
         videoStart = getView().findViewById(R.id.video_start);
         videoStop = getView().findViewById(R.id.video_stop);
+        videoText4 = getView().findViewById(R.id.notify);
+        startService = getView().findViewById(R.id.startService);
+        login = getView().findViewById(R.id.login);
         mediaController = new MediaController(getContext());
         videoView.setMediaController(mediaController);
         mediaController.setMediaPlayer(videoView);
         handlerThread = new HandlerThread("ThreadTest");
         handlerThread.start();
         EventBus.getDefault().register(this);
+    }
+
+    private LoginUser loginUser;
+    private final ServiceConnection serviceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            LogUtils.i("客户端建立成功");
+
+            Messenger messenger = new Messenger(service);
+            Message obtain = Message.obtain(null, 1, 0, 0);
+            try {
+                messenger.send(obtain);
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
+            }
+
+//            loginUser = LoginUser.Stub.asInterface(service);
+//            String result = "";
+//            Parcel data = Parcel.obtain();
+//            Parcel reply = Parcel.obtain();
+//            try {
+//                data.writeInterfaceToken("IPCService");
+//                data.writeInt(1);
+//                service.transact(0x001,data,reply,0);
+//                reply.readException();
+//                result = reply.readString();
+//            } catch (RemoteException e) {
+//                throw new RuntimeException(e);
+//            } finally {
+//                data.recycle();
+//                reply.recycle();
+//            }
+//            Toast.makeText(getContext(), result, Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            LogUtils.i("客户端建立失败");
+        }
+    };
+
+    private void startUserService() {
+        Intent intent = new Intent("com.service.login.user");
+        intent.setPackage("com.example.loginservice");
+        getContext().bindService(intent,serviceConnection, Context.BIND_AUTO_CREATE);
     }
 
     @Override
@@ -89,7 +158,10 @@ public class MineFragment extends BaseFragment implements View.OnTouchListener {
         videoText.setOnClickListener(this);
         videoText2.setOnClickListener(this);
         videoText3.setOnClickListener(this);
+        videoText4.setOnClickListener(this);
         videoWebView.setOnClickListener(this);
+        startService.setOnClickListener(this);
+        login.setOnClickListener(this);
     }
 
 
@@ -132,7 +204,28 @@ public class MineFragment extends BaseFragment implements View.OnTouchListener {
             case R.id.video_web_view:
                 ARouter.getInstance().build(Contons.WEB_VIEW).navigation();
                 break;
+            case R.id.notify:
+                startNotificationService();
+                break;
+            case R.id.startService:
+                startUserService();
+                break;
+            case R.id.login:
+                String zwk = null;
+                try {
+                    zwk = loginUser.login("zwk", "1232131");
+                    LogUtils.i(zwk);
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                }
+                break;
+            default:break;
         }
+    }
+
+    public void startNotificationService() {
+        Intent intent = new Intent(getContext(), NotificationService.class);
+        Objects.requireNonNull(getContext()).startService(intent);
     }
 
     @Override

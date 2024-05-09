@@ -1,7 +1,11 @@
 package com.example.fragment;
 
 import android.annotation.SuppressLint;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Base64OutputStream;
 import android.util.Log;
@@ -13,6 +17,8 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.TaskStackBuilder;
 
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.bumptech.glide.Glide;
@@ -22,6 +28,7 @@ import com.example.common.Contons;
 import com.example.common.SizeUtils;
 import com.example.common.UiUtils;
 import com.example.common.view.BaseFragment;
+import com.example.textview.MainActivity4;
 import com.example.textview.R;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
@@ -32,6 +39,7 @@ import com.youth.banner.loader.ImageLoader;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 
 public class MainFragment extends BaseFragment{
     private TabLayout mTab;
