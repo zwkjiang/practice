@@ -5,9 +5,11 @@ import android.annotation.SuppressLint;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
@@ -25,10 +27,13 @@ import android.widget.VideoView;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.example.bean.CarBean;
 import com.example.bean.EventBean;
+import com.example.broadcase.MyBroadCase;
+import com.example.broadcase.OtherBroadCase;
 import com.example.common.Contons;
 import com.example.common.LogUtils;
 import com.example.common.executor.ExecutorManager;
@@ -75,6 +80,12 @@ public class MineFragment extends BaseFragment implements View.OnTouchListener {
 
     private MyTextView videoWebView;
 
+    private MyTextView sendBroadCase;
+
+    private MyBroadCase myBroadCase;
+
+    private OtherBroadCase otherBroadCase;
+
 
     @Override
     protected int getLayoutId() {
@@ -83,6 +94,7 @@ public class MineFragment extends BaseFragment implements View.OnTouchListener {
 
     @Override
     public void initView() {
+        sendBroadCase = getView().findViewById(R.id.send_broadCase);
         videoWebView = getView().findViewById(R.id.video_web_view);
         videoText = getView().findViewById(R.id.video_text);
         videoText2 = getView().findViewById(R.id.video_text2);
@@ -148,7 +160,11 @@ public class MineFragment extends BaseFragment implements View.OnTouchListener {
 
     @Override
     public void initData() {
+        initBroadCase();
+    }
 
+    private void initBroadCase() {
+            getContext().sendStickyBroadcast(new Intent("com.test.broadCase"));
     }
 
     @Override
@@ -161,6 +177,7 @@ public class MineFragment extends BaseFragment implements View.OnTouchListener {
         videoText4.setOnClickListener(this);
         videoWebView.setOnClickListener(this);
         startService.setOnClickListener(this);
+        sendBroadCase.setOnClickListener(this);
         login.setOnClickListener(this);
     }
 
@@ -218,6 +235,18 @@ public class MineFragment extends BaseFragment implements View.OnTouchListener {
                 } catch (RemoteException e) {
                     throw new RuntimeException(e);
                 }
+                break;
+            case R.id.send_broadCase:
+                IntentFilter intentFilter = new IntentFilter();
+                IntentFilter intentFilter2 = new IntentFilter();
+                myBroadCase = new MyBroadCase();
+                otherBroadCase = new OtherBroadCase();
+                intentFilter.addAction("com.test.broadCase");
+                intentFilter.setPriority(1);
+                intentFilter2.addAction("com.test.broadCase");
+                intentFilter2.setPriority(3);
+                LocalBroadcastManager.getInstance(getContext()).registerReceiver(myBroadCase,intentFilter);
+                getContext().registerReceiver(otherBroadCase,intentFilter2);
                 break;
             default:break;
         }
@@ -324,6 +353,7 @@ public class MineFragment extends BaseFragment implements View.OnTouchListener {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        getContext().unregisterReceiver(myBroadCase);
         EventBus.getDefault().unregister(this);
     }
 }
